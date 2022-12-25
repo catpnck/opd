@@ -18,10 +18,10 @@ public class Pert {
         double boAverageComplexity = boParams.calcAverageComplexity();
         double bmAverageComplexity = bmParams.calcAverageComplexity();
 
-        System.out.println("Средняя трудоемкость кодирования UI: " + uiAverageComplexity);
-        System.out.println("Средняя трудоемкость кодирования обработчиков событий: " + actAverageComplexity);
-        System.out.println("Средняя трудоемкость кодирования бизнес-объектов: " + boAverageComplexity);
-        System.out.println("Средняя трудоемкость кодирования бизнес-методов: " + bmAverageComplexity);
+        printFormatParameter("Средняя трудоемкость кодирования UI", uiAverageComplexity);
+        printFormatParameter("Средняя трудоемкость кодирования обработчиков событий", actAverageComplexity);
+        printFormatParameter("Средняя трудоемкость кодирования бизнес-объектов", boAverageComplexity);
+        printFormatParameter("Средняя трудоемкость кодирования бизнес-методов", bmAverageComplexity);
         System.out.println();
 
         double uiStandardDeviation = uiParams.calcStandardDeviation();
@@ -29,46 +29,54 @@ public class Pert {
         double boStandardDeviation = boParams.calcStandardDeviation();
         double bmStandardDeviation = bmParams.calcStandardDeviation();
 
-        System.out.println("Среднеквадратичное отклонение UI: " + uiStandardDeviation);
-        System.out.println("Среднеквадратичное отклонение обработчиков событий: " + actStandardDeviation);
-        System.out.println("Среднеквадратичное отклонение бизнес-объектов: " + boStandardDeviation);
-        System.out.println("Среднеквадратичное отклонение бизнес-методов: " + bmStandardDeviation);
+        printFormatParameter("Среднеквадратичное отклонение UI", uiStandardDeviation);
+        printFormatParameter("Среднеквадратичное отклонение обработчиков событий", actStandardDeviation);
+        printFormatParameter("Среднеквадратичное отклонение бизнес-объектов", boStandardDeviation);
+        printFormatParameter("Среднеквадратичное отклонение бизнес-методов", bmStandardDeviation);
         System.out.println();
 
         double totalComplexity = uiAverageComplexity * uiParams.count + actAverageComplexity * actParams.count
                 + boAverageComplexity * boParams.count + bmAverageComplexity * bmParams.count;
-        System.out.println("Суммарная трудоемкость кодирования: " + totalComplexity);
+        printFormatParameter("Суммарная трудоемкость кодирования", totalComplexity);
 
         double totalStandardDeviation = calcTotalStandardDeviation(uiStandardDeviation, actStandardDeviation,
                 boStandardDeviation, bmStandardDeviation);
-        System.out.println("Среднеквадратичное отклонение для оценки суммарной трудоемкости кодирования: "
-                + totalStandardDeviation);
+        printFormatParameter("Среднеквадратичное отклонение для оценки суммарной трудоемкости кодирования",
+                totalStandardDeviation);
 
         double totalComplexity95 = totalComplexity + 2 * totalStandardDeviation;
-        System.out.println("Суммарная трудоемкость кодирования, которую не превысим с вероятностью 95%: "
-                + totalComplexity95);
+        printFormatParameter("Суммарная трудоемкость кодирования, которую не превысим с вероятностью 95%"
+                , totalComplexity95);
 
         double relativeError = (totalStandardDeviation / totalComplexity) * 100;
-        System.out.println("Относительная погрешность в оценке суммарной трудоемкости кодирования: "
-                + relativeError + "%");
+        printFormatParameter("Относительная погрешность в оценке суммарной трудоемкости кодирования: ",
+                "%", relativeError);
 
         double totalProjectComplexity = totalComplexity95 * 4;
-        System.out.println("Общая трудоемкость проекта: " + totalProjectComplexity);
+        printFormatParameter("Общая трудоемкость проекта", totalProjectComplexity);
 
         double totalProjectComplexityMonth = totalProjectComplexity / 132;
-        System.out.println("Общая трудоемкость проекта в человек-месяцах: " + totalProjectComplexityMonth);
+        printFormatParameter("Общая трудоемкость проекта в человеко-месяцах", totalProjectComplexityMonth);
 
-        double optimalProjectDuration = 2.5 * (Math.pow(totalProjectComplexityMonth, 1.0/3));
-        System.out.println("Оптимальная продолжительность проекта: " + optimalProjectDuration);
+        double optimalProjectDuration = 2.5 * (Math.pow(totalProjectComplexityMonth, 1.0 / 3));
+        printFormatParameter("Оптимальная продолжительность проекта", optimalProjectDuration);
 
         double optimalTeamSize = totalProjectComplexityMonth / optimalProjectDuration;
-        System.out.println("Оптимальная численность команды: " + optimalTeamSize);
+        printFormatParameter("Оптимальная численность команды", optimalTeamSize);
     }
 
     private static double calcTotalStandardDeviation(double uiStandardDeviation, double actStandardDeviation,
                                                      double boStandardDeviation, double bmStandardDeviation) {
         return Math.sqrt(uiStandardDeviation * uiStandardDeviation + actStandardDeviation * actStandardDeviation
                 + boStandardDeviation * boStandardDeviation + bmStandardDeviation * bmStandardDeviation);
+    }
+
+    private static void printFormatParameter(String prefix, String suffix, double parameter) {
+        System.out.printf("%s: %.4f%s%n", prefix, parameter, suffix);
+    }
+
+    private static void printFormatParameter(String prefix, double parameter) {
+        printFormatParameter(prefix, "", parameter);
     }
 
     private static class ObjectParameters {
